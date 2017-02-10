@@ -34,37 +34,36 @@
  * Contact: royprote@egr.msu.edu, proteek_buet@yahoo.com
  */
 
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
 
-public class BestOrderSortStandAlone {
+public class BestOrderSort{
 
-	int m1=-1;
-	double population[][];
-	int [][]allrank;
-	MergeSort mergesort;
-	int rank[];
-	boolean []set;
-	LinkedList [][] list;
-	LinkedList []L;//two dimension
-	double b[];//two dimension
-	int totalfront = 0;
-	LinkedList[] Front;
-	int s;
-	int n;
-	int m, m2;
-	int obj,obj_rank;
-	int []size;
-	int []lex_order;
+	static int m1=-1;
+	static double population[][];
+	static int [][]allrank;
+	static MergeSort mergesort;
+	static int rank[];
+	static boolean []set;
+	static LinkedList [][] list;
+	static LinkedList []L;//two dimension
+	static double b[];//two dimension
+	static int totalfront = 0;
+	static LinkedList[] Front;
+	static int s;
+	static int n;
+	static int m, m2;
+	static int obj,obj_rank;
+	static int []size;
+	static int []lex_order;
 	
-	long start, end, endTime2;
-	double time, comparison, time_sort, time_domination, comparison_sort, comparison_domination;
+	static long start, end, endTime2;
+	static double time, comparison, time_sort, time_domination, comparison_sort, comparison_domination;
 	
 	
-	public void best_order_sort(double [][] population, boolean debug, boolean printinfo) 
+	public static void best_order_sort(double [][] population, boolean debug, boolean printinfo) 
 	{
 		
 		initialize(population, debug, printinfo);
@@ -88,7 +87,7 @@ public class BestOrderSortStandAlone {
 			printInformation(n, m, debug, rank, totalfront, comparison);
 		}
 	}
-	public void best_sort(boolean debug, boolean printinfo,int n, int m)
+	public static void best_sort(boolean debug, boolean printinfo,int n, int m)
 	{
 		int i, j, total=0, i2;
 		boolean dominated;
@@ -179,7 +178,7 @@ public class BestOrderSortStandAlone {
 	 * @param p2
 	 * @return
 	 */
-	public boolean dominates(int p1, int  p2)//one way domination check
+	public static boolean dominates(int p1, int  p2)//one way domination check
 	{
 		boolean equal = true;
 		int i;
@@ -206,7 +205,7 @@ public class BestOrderSortStandAlone {
 	/**
 	 * Sorting population by each objective
 	 */
-	public void sortingValues() 
+	public static void sortingValues() 
 	{
 		int j;
 		mergesort.sort(0);//Sorting first objectives and get lexicographic order
@@ -230,13 +229,13 @@ public class BestOrderSortStandAlone {
 	 * @param debug
 	 * @param printinfo
 	 */
-	private void initialize(double[][] population, boolean debug, boolean printinfo)
+	private static void initialize(double[][] population2, boolean debug, boolean printinfo)
 	{
 		if(printinfo)
 		{
 			System.out.println("\nStarting Best Order Sort");
 		}
-		this.population = population;
+		population = population2;
 		mergesort = new MergeSort();
 		n = population.length;
 		m = population[0].length;
@@ -247,7 +246,7 @@ public class BestOrderSortStandAlone {
 	/**
 	 * Calculation of time and other possible statistics
 	 */
-	private void mini_stat()
+	private static void mini_stat()
 	{
 		time = (end-start)*1.0/1000000.0;
 		time_sort = (endTime2 - start)*1.0/1000000.0;
@@ -257,7 +256,7 @@ public class BestOrderSortStandAlone {
 	/**
 	 * This algorithm runs O(nlogn) algorithm for two dimensional non-dominated sorting problem
 	 */
-	public void extended_kung_sort_two_dimension()
+	public static void extended_kung_sort_two_dimension()
 	{
 		//Initialization
 		int i,j, low, high, middle;
@@ -325,7 +324,7 @@ public class BestOrderSortStandAlone {
 	 * @author Proteek Roy
 	 *
 	 */
-	class MergeSort 
+	static class MergeSort 
 	{
 		//local variables
 		int[] helper;
@@ -611,7 +610,39 @@ public class BestOrderSortStandAlone {
 			System.err.println("Error: " + e.getMessage());
 		}
 	}
-	
+	/**
+	 * Class to save solutions in a list
+	 * @author Proteek Roy
+	 *
+	 */
+	public static class LinkedList
+	{
+	    protected Node start;
+	    
+	    public LinkedList()// Constructor
+	    {
+	        start = null;
+	    }
+	    
+	    //Function to insert an element at the beginning 
+	    public void addStart(int val)
+	    {
+	        Node nptr = new Node(val, start);    
+	        start = nptr;
+	    }
+	}
+	public static class Node
+    {
+        protected int data;
+        protected Node link;
+        
+        //  Constructor
+        public Node(int d,Node n)
+        {
+            data = d;
+            link = n;
+        }
+    }
 	/**
 	 * Printing all solutions from each front
 	 * @param n
@@ -621,7 +652,7 @@ public class BestOrderSortStandAlone {
 	 * @param totalfront
 	 * @param comparison_dominated
 	 */
-	public void printInformation(int n, int m, boolean debug, int []rank, int totalfront, double comparison)
+	public static void printInformation(int n, int m, boolean debug, int []rank, int totalfront, double comparison)
 	{
 		int i,k, k1;
 		Node head;
@@ -674,27 +705,22 @@ public class BestOrderSortStandAlone {
 		System.out.println("Total Number of elements is "+n);
 		System.out.println("Total Number of objectives is "+ m);
 	}
-	
-	/**
-	 * Class to save solutions in a list
-	 * @author Proteek Roy
-	 *
-	 */
-	private class LinkedList
+	public static void main(String[] args) 
 	{
-	    protected Node start;
-	    
-	    public LinkedList()// Constructor
-	    {
-	        start = null;
-	    }
-	    
-	    //Function to insert an element at the beginning 
-	    public void addStart(int val)
-	    {
-	        Node nptr = new Node(val, start);    
-	        start = nptr;
-	    }
+		
+		BestOrderSort best = new BestOrderSort();
+		int n = 10000;
+		int m = 10;
+		int f = 10;
+		boolean printinfo = true;//print overall information
+		boolean debug = false;//print out elements of a front	
+		//String filename="fixed_front_"+n+"_"+m+"_"+f+"_1.txt";//fixed front data with 10 fronts
+		String filename="cloud_"+n+"_"+m+"_1.txt";
+		double [][] population = new double[n][m];
+		best.read_population(n,m,filename, population);
+		best.best_order_sort(population, debug, printinfo);;
+		
 	}
+	
 
 }
