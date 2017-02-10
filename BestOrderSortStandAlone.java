@@ -623,7 +623,7 @@ public class BestOrderSortStandAlone {
 	 */
 	public void printInformation(int n, int m, boolean debug, int []rank, int totalfront, double comparison)
 	{
-		int i,k;
+		int i,k, k1;
 		Node head;
 		LinkedList[] F=new LinkedList[totalfront];
 		for(i=0;i<totalfront;i++)
@@ -652,14 +652,18 @@ public class BestOrderSortStandAlone {
 			System.out.println("Number of elements in front ["+(i+1)+"] is "+k);
 			if(debug)
 			{
+				k1 = 0;
 				if(F[i].start!=null)
 				{
 					System.out.print(" --> ");
 					head = F[i].start;	
 					while(head!=null)
 					{
+						k1++;
 						System.out.print((head.data)+", ");
 						head=head.link;
+						if(k1%30==0)
+							System.out.println();
 					}
 					System.out.println();
 				}
