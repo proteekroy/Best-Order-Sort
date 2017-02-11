@@ -39,6 +39,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 
+
 public class BestOrderSort{
 
 	static int m1=-1;
@@ -60,10 +61,10 @@ public class BestOrderSort{
 	static int []lex_order;
 	
 	static long start, end, endTime2;
-	static double time, comparison, time_sort, time_domination, comparison_sort, comparison_domination;
+	static double time, comparison, time_sort, time_rank, comparison_sort, comparison_rank;
 	
 	
-	public static void best_order_sort(double [][] population, boolean debug, boolean printinfo) 
+	public static Information best_order_sort(double [][] population, boolean debug, boolean printinfo) 
 	{
 		
 		initialize(population, debug, printinfo);
@@ -82,10 +83,11 @@ public class BestOrderSort{
 		if(printinfo)
 		{			
 			System.out.println("Sorting time  = "+time_sort+" ms");
-			System.out.println("Domination check time = "+time_domination+" ms");
+			System.out.println("Domination check time = "+time_rank+" ms");
 			System.out.println("Total Running time = "+time+" ms");
 			printInformation(n, m, debug, rank, totalfront, comparison);
 		}
+		return new Information(comparison_sort, comparison_rank, time_sort, time_rank, rank);
 	}
 	public static void best_sort(boolean debug, boolean printinfo,int n, int m)
 	{
@@ -187,12 +189,12 @@ public class BestOrderSort{
 			
 			if(population[p1][i] > population[p2][i])
 			{
-				comparison++;
+				comparison_rank++;
 				return false;
 			}
 			else if(equal && population[p1][i] < population[p2][i])
 			{
-				comparison = comparison+2;
+				comparison_rank = comparison_rank+2;
 				equal = false;
 			}
 		}
@@ -250,7 +252,8 @@ public class BestOrderSort{
 	{
 		time = (end-start)*1.0/1000000.0;
 		time_sort = (endTime2 - start)*1.0/1000000.0;
-		time_domination = (end - endTime2)*1.0/1000000.0;
+		time_rank = (end - endTime2)*1.0/1000000.0;
+		comparison = comparison_sort + comparison_rank;
 	}
 		
 	/**
@@ -278,7 +281,7 @@ public class BestOrderSort{
 		start=System.nanoTime();	
 		mergesort.sort(0);;//lexicographic sort
 		endTime2 = System.nanoTime();
-		comparison = comparison + mergesort.comparison;
+		comparison_sort = comparison_sort + mergesort.comparison;
 		
 		
 		b[0] = population[allrank[0][0]][1];//y-value of first rank solution
@@ -300,12 +303,12 @@ public class BestOrderSort{
 					
 				if(key < b[middle]) //it has low rank, numerically
 				{
-					comparison++;
+					comparison_rank++;
 					high = middle - 1;
 				}
 				if(key >= b[middle]) //it has high rank, numerically
 				{
-					comparison = comparison+2;
+					comparison_rank = comparison_rank+2;
 					low = middle + 1;
 				}
 			}
@@ -354,7 +357,6 @@ public class BestOrderSort{
 			this.population=pop;
 			this.n=population.length;
 			helper=new int[n];
-			comparison = 0;
 		}
 		
 		public void setLexOrder(int []order)
@@ -370,9 +372,9 @@ public class BestOrderSort{
 		public void sort(int obj)//merge sort main
 		{
 			this.obj=obj;
+			comparison = 0;
 			n = population.length;
 			mergesort(0, n-1);
-
 		}
 		
 		/**
@@ -456,6 +458,7 @@ public class BestOrderSort{
 		{
 			this.obj=obj;
 			n = population.length;
+			comparison = 0;
 			mergesort_specific(0, n-1);
 		}
 		
@@ -575,7 +578,7 @@ public class BestOrderSort{
 	 * @param filename, name of text file
 	 * @param population, memory to hold population
 	 */
-	public void read_population(int n, int m, String filename,double [][] population) 
+	public static void read_population(int n, int m, String filename,double [][] population) 
 	{
 		int i=0,j;
 		try
@@ -643,6 +646,27 @@ public class BestOrderSort{
             link = n;
         }
     }
+	public static class Information 
+	{
+		public static double comparison = 0;
+		public static double time = 0;
+	    public static double comparison_sort = 0;
+	    public static double comparison_rank = 0;
+	    public static double time_sort = 0;
+	    public static double time_rank = 0;
+	    public static int[] R;
+	    
+	    public Information(double comparison_sort1, double comparison_rank1, double time_sort1, double time_rank1, int[] R1)
+	    {
+	    	comparison_sort = comparison_sort1;
+	 	    comparison_rank = comparison_rank1;
+	 	    time_sort = time_sort1;
+	 	    time_rank = time_rank1;
+	 	    comparison = comparison_sort + comparison_rank;
+	 	    time = time_sort + time_rank;
+	 	    R = R1;
+	    }
+	}
 	/**
 	 * Printing all solutions from each front
 	 * @param n
@@ -708,7 +732,6 @@ public class BestOrderSort{
 	public static void main(String[] args) 
 	{
 		
-		BestOrderSort best = new BestOrderSort();
 		int n = 10000;
 		int m = 10;
 		int f = 10;
@@ -717,8 +740,8 @@ public class BestOrderSort{
 		//String filename="fixed_front_"+n+"_"+m+"_"+f+"_1.txt";//fixed front data with 10 fronts
 		String filename="cloud_"+n+"_"+m+"_1.txt";
 		double [][] population = new double[n][m];
-		best.read_population(n,m,filename, population);
-		best.best_order_sort(population, debug, printinfo);;
+		BestOrderSort.read_population(n,m,filename, population);
+		BestOrderSort.best_order_sort(population, debug, printinfo);;
 		
 	}
 	
