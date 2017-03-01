@@ -40,6 +40,7 @@ import java.io.IOException;
 
 
 
+
 public class BestOrderSort{
 
 	static int m1=-1;
@@ -211,6 +212,7 @@ public class BestOrderSort{
 	{
 		int j;
 		mergesort.sort(0);//Sorting first objectives and get lexicographic order
+		comparison_sort = comparison_sort + mergesort.comparison;
 		allrank=mergesort.getrank();
 		for(j=1;j<n;j++)
 		{
@@ -220,7 +222,7 @@ public class BestOrderSort{
 		for (j=1;j<m1;j++)
 		{
 			mergesort.sort_specific(j);
-			comparison = comparison + mergesort.comparison;
+			comparison_sort = comparison_sort + mergesort.comparison;
 		}
 		allrank = mergesort.getrank();
 	}
@@ -237,6 +239,18 @@ public class BestOrderSort{
 		{
 			System.out.println("\nStarting Best Order Sort");
 		}
+		/*int i, j;
+		for(i=0;i<population2.length;i++)
+		{
+			for(j=0;j<population2[0].length;j++)
+			{
+				if(Double.isNaN(population2[i][j]))
+				{
+					rank[i] = -1;
+					break;
+				}
+			}
+		}*/
 		population = population2;
 		mergesort = new MergeSort();
 		n = population.length;
@@ -280,7 +294,7 @@ public class BestOrderSort{
 		mergesort.setrank(allrank);
 		start=System.nanoTime();	
 		mergesort.sort(0);;//lexicographic sort
-		
+		comparison_sort = mergesort.comparison;
 		endTime2 = System.nanoTime();
 		
 		//b[0] = population[allrank[0][0]][1];//y-value of first rank solution
@@ -301,17 +315,20 @@ public class BestOrderSort{
 			while(high >= low) 
 			{
 				middle = (low + high) / 2;
-				comparison++;
+				
 				if(key < population[index[middle]][1]) //it has low rank, numerically
 				{
+					comparison_sort++;
 					high = middle - 1;
 				}
 				else if(key > population[index[middle]][1]) //it has high rank, numerically
 				{
+					comparison_sort = comparison_sort+2;
 					low = middle + 1;
 				}
 				else
 				{
+					comparison_sort = comparison_sort+2;
 					if(population[index[middle]][0]<population[s][0])
 					{
 						low = middle + 1;
@@ -743,15 +760,24 @@ public class BestOrderSort{
 	public static void main(String[] args) 
 	{
 		
-		int n = 10000;
-		int m = 10;
-		int f = 10;
+		int n = 4;
+		int m = 2;
+		int f = 1;
 		boolean printinfo = true;//print overall information
 		boolean debug = false;//print out elements of a front	
-		//String filename="fixed_front_"+n+"_"+m+"_"+f+"_1.txt";//fixed front data with 10 fronts
-		String filename="cloud_"+n+"_"+m+"_1.txt";
-		double [][] population = new double[n][m];
-		BestOrderSort.read_population(n,m,filename, population);
+		//String filename="fixed_front_"+n+"_"+m+"_"+f+"_1.txt";
+		//String filename="cloud_"+n+"_"+m+"_1.txt";
+		double [][]population = new double[n][m];
+		population[0][0] = 1;population[0][1] = 1;
+		population[1][0] = 1;population[1][1] = 1;
+		population[2][0] = 1;population[2][1] = 1;
+		population[3][0] = 2;population[3][1] = 2;
+//		population[4][0] = 1;population[4][1] = 1;
+//		population[5][0] = 1;population[5][1] = 1;
+//		population[6][0] = 1;population[6][1] = 1;
+//		population[7][0] = 2;population[7][1] = 2;
+//		
+		//BestOrderSort.read_population(n,m,filename, population);
 		BestOrderSort.best_order_sort(population, debug, printinfo);;
 		
 	}
