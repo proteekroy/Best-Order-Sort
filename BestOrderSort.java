@@ -267,7 +267,8 @@ public class BestOrderSort{
 		
 		rank = new int[n];//ranks of solutions
 		allrank = new int[n][m];//partial lexicographical ordering of x-axis values 
-		b = new double[n];
+		//b = new double[n];
+		int []index = new int[n];
 		L = new LinkedList[n];
 		for(j=0;j<m;j++)
 		{
@@ -276,40 +277,50 @@ public class BestOrderSort{
 				allrank[i][j]=i;
 			}
 		}
-		start = System.nanoTime();
 		mergesort.setrank(allrank);
 		start=System.nanoTime();	
 		mergesort.sort(0);;//lexicographic sort
+		
 		endTime2 = System.nanoTime();
-		comparison_sort = comparison_sort + mergesort.comparison;
 		
-		
-		b[0] = population[allrank[0][0]][1];//y-value of first rank solution
+		//b[0] = population[allrank[0][0]][1];//y-value of first rank solution
+		index[0] = allrank[0][0];
 		rank[allrank[0][0]] = 0; //rank of first solution is already found
 		totalfront = 1;
-		L[0] = new LinkedList();
+		
 		for(i=1;i<n;i++)
 		{
 			s = allrank[i][0];//take the solution id
 			key = population[s][1];//the field we would consider
 			
+				
 			//-------------Go over all points----------------------//
 			low = 0;			
 			high = totalfront - 1;
 		         
 			while(high >= low) 
 			{
-				middle = low + ((high - low) / 2); 
-					
-				if(key < b[middle]) //it has low rank, numerically
+				middle = (low + high) / 2;
+				comparison++;
+				if(key < population[index[middle]][1]) //it has low rank, numerically
 				{
-					comparison_rank++;
 					high = middle - 1;
 				}
-				if(key >= b[middle]) //it has high rank, numerically
+				else if(key > population[index[middle]][1]) //it has high rank, numerically
 				{
-					comparison_rank = comparison_rank+2;
 					low = middle + 1;
+				}
+				else
+				{
+					if(population[index[middle]][0]<population[s][0])
+					{
+						low = middle + 1;
+					}
+					else//first objective was also same
+					{
+						low = rank[index[middle]];
+						break;
+					}
 				}
 			}
 				
@@ -318,7 +329,7 @@ public class BestOrderSort{
 				totalfront = totalfront+1;
 			}
 			rank[s] = low;
-			b[low] = key;
+			index[low] = s;
 		}
 	}
 	
